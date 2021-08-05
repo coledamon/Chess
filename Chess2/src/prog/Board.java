@@ -33,6 +33,17 @@ public class Board {
         }
     }
 
+    public Board(int testChoice) {
+        switch (testChoice) {
+            case 0:
+                this.initializeNormal();
+                break;
+            case 1:
+                this.initialize960();
+                break;
+        }
+    }
+
     private void initializeNormal(){
         for(int x = 0; x<board.length; x++){
             for(int y = 0; y<board[0].length; y++){
