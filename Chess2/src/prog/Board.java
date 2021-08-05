@@ -1,10 +1,8 @@
 package prog;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Board {
 
@@ -107,48 +105,66 @@ public class Board {
         //must be at least 1 space apart, king must go between
         int index = spaces.get(rand.nextInt(spaces.size()));
         int rook1 = spacesNoChange.get(index);
-        spaces.remove(index);
+        spaces.remove((Integer) index);
         index = spaces.get(rand.nextInt(spaces.size()));
         int rook2 = spacesNoChange.get(index);
         while(Math.abs(rook2-rook1) < 2) {
             index = spaces.get(rand.nextInt(spaces.size()));
             rook2 = spacesNoChange.get(index);
         }
-        int king = rand.nextInt(Math.abs(rook2-rook1)-1)+1+Math.min(rook1, rook2);
-        spaces.remove(spaces.indexOf(king));
-        int bishop1Index = spaces.get(rand.nextInt(spaces.size()));
-        int bishop1 = spacesNoChange.get(index);
-        int bishop2Index = spaces.get(rand.nextInt(spaces.size()));
-        int bishop2;
-        do {
-            bishop2 = rand.nextInt(4)*2;
-            if(bishop1%2==0) bishop2++;
-        }while(bishop2 == rook1 || bishop2 == rook2 || bishop2 == king);
+        spaces.remove((Integer) index);
 
-        board[0][0] = new Rook("white");
-        board[0][7] = new Rook("white");
-        board[7][7] = new Rook("black");
-        board[7][0] = new Rook("black");
+        //king king goes between rooks
+        int king = rand.nextInt(Math.abs(rook2-rook1)-1)+1+Math.min(rook1, rook2);
+        spaces.remove((Integer) king);
+        index = spaces.get(rand.nextInt(spaces.size()));
+
+        //bishops must be on opposite colored spaces
+        int bishop1 = spacesNoChange.get(index);
+        spaces.remove((Integer) index);
+        List<Integer> temp = spaces.stream().filter(i-> (bishop1 % 2 == 0) == (i % 2 != 0)).collect(Collectors.toList());
+        index = temp.get(rand.nextInt(temp.size()));
+        int bishop2 = spacesNoChange.get(index);
+        spaces.remove((Integer) index);
+        index = spaces.get(rand.nextInt(spaces.size()));
+
+        //knights
+        int knight1 = spacesNoChange.get(index);
+        spaces.remove((Integer) index);
+        index = spaces.get(rand.nextInt(spaces.size()));
+        int knight2 = spacesNoChange.get(index);
+        spaces.remove((Integer) index);
+
+        //queen
+        index = spaces.get(rand.nextInt(spaces.size()));
+        int queen = spacesNoChange.get(index);
+        spaces.remove((Integer) index);
+
+        //Rooks
+        board[0][rook1] = new Rook("white");
+        board[0][rook2] = new Rook("white");
+        board[7][rook2] = new Rook("black");
+        board[7][rook1] = new Rook("black");
 
         //Knights
-        board[0][1] = new Knight("white");
-        board[0][6] = new Knight("white");
-        board[7][6] = new Knight("black");
-        board[7][1] = new Knight("black");
+        board[0][knight1] = new Knight("white");
+        board[0][knight2] = new Knight("white");
+        board[7][knight2] = new Knight("black");
+        board[7][knight1] = new Knight("black");
 
         //Bishops
-        board[0][2] = new Bishop("white");
-        board[0][5] = new Bishop("white");
-        board[7][2] = new Bishop("black");
-        board[7][5] = new Bishop("black");
+        board[0][bishop1] = new Bishop("white");
+        board[0][bishop2] = new Bishop("white");
+        board[7][bishop1] = new Bishop("black");
+        board[7][bishop2] = new Bishop("black");
 
         //Queens
-        board[0][3] = new Queen("white");
-        board[7][3] = new Queen("black");
+        board[0][queen] = new Queen("white");
+        board[7][queen] = new Queen("black");
 
         //Kings
-        board[0][4] = new King("white");
-        board[7][4] = new King("black");
+        board[0][king] = new King("white");
+        board[7][king] = new King("black");
 
     }
 
