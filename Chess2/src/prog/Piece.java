@@ -1,3 +1,5 @@
+package prog;
+
 public abstract class Piece {
 	
 	public String color;

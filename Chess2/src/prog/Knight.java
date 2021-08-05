@@ -1,3 +1,4 @@
+package prog;
 
 public class Knight extends Piece {
 
@@ -26,7 +27,7 @@ public class Knight extends Piece {
 	}
 	
 	public String toString(){
-		return color.charAt(0) + "N";
+		return color.charAt(0) + "k";
 	}
 
 }

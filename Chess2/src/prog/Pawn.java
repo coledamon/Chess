@@ -1,3 +1,4 @@
+package prog;
 
 public class Pawn extends Piece {
 

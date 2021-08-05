@@ -1,5 +1,8 @@
+package prog;
+
 import java.io.IOException;
 import java.util.Scanner;
+
 public class Chess {
 
     /**
@@ -38,13 +41,13 @@ public class Chess {
 
             try {
                 gameBoard.performMove(move, color, true);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 // Ask for user input again
                 System.out.println("Invalid input!");
                 continue;
             }
 
-            Piece[][] oldBoard = gameBoard.board.clone();
+            Piece[][] oldBoard= gameBoard.board.clone();
 
             if(!gameBoard.canAnyPieceMakeAnyMove(colorToggle(color))){
                 if(gameBoard.isInCheck(colorToggle(color))){

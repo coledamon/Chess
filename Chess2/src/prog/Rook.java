@@ -1,3 +1,4 @@
+package prog;
 
 public class Rook extends Piece{
 

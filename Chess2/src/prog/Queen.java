@@ -1,3 +1,4 @@
+package prog;
 
 public class Queen extends Piece{
 

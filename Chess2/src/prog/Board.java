@@ -1,14 +1,41 @@
+package prog;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Scanner;
 
 public class Board {
 
     public Piece[][] board = new Piece[8][8];
 
     public Board(){
-        this.initialize();
+        System.out.println("Would you like to play normal chess (Enter 0) or Chess 960 (Enter 1)?");
+        Scanner in = new Scanner(System.in);
+        int choice = 0;
+        boolean valid = false;
+        do {
+            String input = in.nextLine();
+            try {
+                choice = Integer.parseInt(input);
+                if(choice != 0 && choice != 1) throw new Exception();
+                valid = true;
+            } catch (Exception e) {
+                System.out.println("Please enter a valid option (0 or 1).");
+            }
+        } while(!valid);
+        switch (choice) {
+            case 0:
+                this.initializeNormal();
+                break;
+            case 1:
+                this.initialize960();
+                break;
+        }
     }
 
-    private void initialize(){
+    private void initializeNormal(){
         for(int x = 0; x<board.length; x++){
             for(int y = 0; y<board[0].length; y++){
                 board[x][y] = null;
@@ -26,6 +53,78 @@ public class Board {
         }
 
         //Rooks
+        board[0][0] = new Rook("white");
+        board[0][7] = new Rook("white");
+        board[7][7] = new Rook("black");
+        board[7][0] = new Rook("black");
+
+        //Knights
+        board[0][1] = new Knight("white");
+        board[0][6] = new Knight("white");
+        board[7][6] = new Knight("black");
+        board[7][1] = new Knight("black");
+
+        //Bishops
+        board[0][2] = new Bishop("white");
+        board[0][5] = new Bishop("white");
+        board[7][2] = new Bishop("black");
+        board[7][5] = new Bishop("black");
+
+        //Queens
+        board[0][3] = new Queen("white");
+        board[7][3] = new Queen("black");
+
+        //Kings
+        board[0][4] = new King("white");
+        board[7][4] = new King("black");
+
+    }
+
+    private void initialize960(){
+        //The bishops must be placed on opposite-color squares.
+        //The king must be placed on a square between the rooks.
+//        everything but pawns randomized
+        Random rand = new Random();
+        ArrayList<Integer> spaces = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7));
+        ArrayList<Integer> spacesNoChange = new ArrayList<>(spaces);
+        for(int x = 0; x<board.length; x++){
+            for(int y = 0; y<board[0].length; y++){
+                board[x][y] = null;
+            }
+        }
+
+        // White pawns
+        for(int x=0; x<8; x++){
+            board[1][x] = new Pawn("white");
+        }
+
+        // Black pawns
+        for(int x=0; x<8; x++){
+            board[6][x] = new Pawn("black");
+        }
+
+        //Rooks
+        //must be at least 1 space apart, king must go between
+        int index = spaces.get(rand.nextInt(spaces.size()));
+        int rook1 = spacesNoChange.get(index);
+        spaces.remove(index);
+        index = spaces.get(rand.nextInt(spaces.size()));
+        int rook2 = spacesNoChange.get(index);
+        while(Math.abs(rook2-rook1) < 2) {
+            index = spaces.get(rand.nextInt(spaces.size()));
+            rook2 = spacesNoChange.get(index);
+        }
+        int king = rand.nextInt(Math.abs(rook2-rook1)-1)+1+Math.min(rook1, rook2);
+        spaces.remove(spaces.indexOf(king));
+        int bishop1Index = spaces.get(rand.nextInt(spaces.size()));
+        int bishop1 = spacesNoChange.get(index);
+        int bishop2Index = spaces.get(rand.nextInt(spaces.size()));
+        int bishop2;
+        do {
+            bishop2 = rand.nextInt(4)*2;
+            if(bishop1%2==0) bishop2++;
+        }while(bishop2 == rook1 || bishop2 == rook2 || bishop2 == king);
+
         board[0][0] = new Rook("white");
         board[0][7] = new Rook("white");
         board[7][7] = new Rook("black");
